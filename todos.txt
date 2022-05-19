@@ -1,0 +1,1 @@
+TODOs: Simulate to verify, manually set Key to 1/0, view as radixx, no testbench reqd, screenshot waveform
