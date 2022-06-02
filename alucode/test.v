@@ -16,7 +16,7 @@ module testALU();
 	//0101 Bitwise NOR A, B
 	//0110 Bitwise XNOR A, B
 	//0111 Bitwise NOT ~A
-	//1000 Logical Shift Right A
+	//1000 Logical Shift Right A 
 	
 	//notes for self:
 	//Cout and OF don't seem to work!!
