@@ -1,10 +1,10 @@
 module ALU(input [3:0] aluin_a, aluin_b, OPCODE, input Cin, output reg[3:0] alu_out, output reg Cout, OF);
 	//declarations
 	reg [3:0] A, B, twosCompB;
-	reg addCin, zeroCin;
+	reg addCin;
 	wire [3:0] Sum, Diff, AShift;
 	wire inCout, inOF;
-	assign zeroCin = 1'b0;
+	
 	
 	//module references
 	FA4 fa4(A, B, addCin, Sum, inCout, inOF);
@@ -26,7 +26,7 @@ module ALU(input [3:0] aluin_a, aluin_b, OPCODE, input Cin, output reg[3:0] alu_
 			4'b0010: begin //Add no Cin
 				A = aluin_a;
 				B = aluin_b;
-				addCin = zeroCin;
+				addCin = 1'b0;
 				
 				alu_out = Sum; 
 				Cout = inCout;
@@ -78,11 +78,71 @@ module ALU(input [3:0] aluin_a, aluin_b, OPCODE, input Cin, output reg[3:0] alu_
 				Cout = 1'b0;
 				OF = 1'b0;
 			end
-			default:
+			default: begin 
 				alu_out = 4'b0;
 				Cout = 1'b0;
 				OF = 1'b0;
 			end
 		endcase
 	end
+endmodule
+
+module HA(input A, B, output Sum, Cout);
+	assign Sum = A^B;
+	assign Cout = A&B;
+endmodule //HA
+
+module FA(input A, B, Cin, output Sum, Cout);
+	wire sum1, cout1, cout2;
+	HA ha1 (A, B, sum1, cout1);
+	HA ha2 (sum1, Cin, Sum, cout2);
+
+	assign Cout = cout1 | cout2;
+endmodule //FA
+
+module FA4(input [3:0] A, B, input Cin, output [3:0] Sum, output Cout, OF);
+
+	wire C1, C2, C3;
+	FA fa1(A[0], B[0], Cin, Sum[0], C1);
+	FA fa2(A[1], B[1], C1, Sum[1], C2);
+	FA fa3(A[2], B[2], C2, Sum[2], C3);
+	FA fa4(A[3], B[3], C3, Sum[3], Cout);
+
+	assign OF = C3 ^ Cout;
+
+endmodule //Ripple Adder 4 bit
+
+module twosComp(input [3:0] inVal, output [3:0] twosC);
+	wire [3:0] oneComp;
+	assign oneComp = inVal ^ 4'b1111; //a more fundamental invert :p
+	reg [3:0] plusOne = 1'b1; //consistent +1 for twos
+	//empty wires to feed into ripple adder
+	wire Cin = 1'b0;
+	wire Cout, OF;
+	//4 bit ripple adder
+	FA4 rA2C(OneComp, plusOne, Cin, twosC, Cout, OF); //add onesComp + 1 to output Twos Comp to output 
+	
+endmodule
+
+module Rsub4(input [3:0] A, B, output [3:0] diff, Cout, OF);
+	wire [3:0] twosCompB; //the twos comp of B
+	twosComp twC(B, twosCompB); //getting the twos comp
+	wire Cin = 1'b0; //empty
+	
+	FA4 raSub(A, twosCompB, Cin, diff, Cout, OF); //Adding but with a negative number (subtracting hmm)
+endmodule
+
+module logicalShiftRight(input [3:0] A, output [3:0] Aout);
+	wire A0, A1, A2, A3;
+	
+	assign A0 = A[1];
+	assign A1 = A[2];
+	assign A2 = A[3];
+	assign A3 = 1'b0;
+
+	assign Aout[3] = A3;
+	assign Aout[2] = A2;
+	assign Aout[1] = A1;
+	assign Aout[0] = A0;
+	
 endmodule
