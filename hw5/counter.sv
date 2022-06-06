@@ -19,8 +19,9 @@ module synCounter(input clk, R, input [3:0] maxCount, output logic [3:0] count, 
 endmodule
 
 module synCounter_tb();
-	`timescale 1ns/1ps
-	reg clk, R, maxCount;
+	//`timescale 1ns/1ps
+	reg clk, R;
+	reg [3:0] maxCount;
 	logic [3:0] count;
 	logic Z;
 	

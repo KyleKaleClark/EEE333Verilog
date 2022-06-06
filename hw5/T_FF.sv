@@ -4,11 +4,12 @@ module T_FF(input T, R, En, clk, output reg Q, output Qn);
 			if (R) Q <= 1'b0; 
 			else Q <= T ^ Q;
 		end
+	end
 	assign Qn = ~Q;
 endmodule
 
 module T_FF_tb();
-`timescale 1ns/1ps
+//`timescale 1ns/1ps
 	reg T, R, En, clk, Q; 
 	wire Qn; 
 	
