@@ -121,8 +121,8 @@ module twosComp(input [3:0] inVal, output [3:0] twosC);
 	wire Cin = 1'b0;
 	wire Cout, OF;
 	//4 bit ripple adder
-	FA4 rA2C(OneComp, plusOne, Cin, twosC, Cout, OF); //add onesComp + 1 to output Twos Comp to output 
-	
+	//FA4 rA2C(OneComp, plusOne, Cin, twosC, Cout, OF); //add onesComp + 1 to output Twos Comp to output 
+	assign twosC = oneComp + plusOne;
 endmodule //twos comp
 
 module Rsub4(input [3:0] A, B, output [3:0] diff, Cout, OF);
