@@ -10,9 +10,11 @@ module FSM(input clk, reset, SW1, SW2, SW3, SW4, output logic [2:0] state, outpu
 			state <= nextState;
 	end
 	
+	//combinatorial parttttttt
 	always_comb begin
 		nextState = state;
-		//Z configurement here
+		
+		//Z configurement here vvv
 		case(state)
 			S0: Z = 2'b01;
 			S1: Z = 2'b01;
@@ -21,45 +23,45 @@ module FSM(input clk, reset, SW1, SW2, SW3, SW4, output logic [2:0] state, outpu
 			S4: Z = 2'b10;
 		endcase
 		
-		case(state) begin
+		case(state)
 			S0: begin
-				if(SW1 && !SW2 && !SW3 && !Sw4)
+				if(SW1 & ~SW2 & ~SW3 & ~SW4)
 					nextState = S1;
-				else if(S3 && !SW1 && !SW2 && !SW4)
+              	else if(SW3 & ~SW1 & ~SW2 & ~SW4)
 					nextState = S3;
 				else
 					nextState = S0;
 			end
 			S1: begin
-				if(SW2 && !SW1 && !SW3 && !SW4)
+				if(SW2 & ~SW1 & ~SW3 & ~SW4)
 					nextState = S2;
 				else
 					nextState = S1;
 			end
 			S2: begin
-				if(SW2 && !SW1 && !SW3 && !SW4)
+				if(SW2 & ~SW1 & ~SW3 & ~SW4)
 					nextState = S1;
+              	else if(SW3 & ~SW1 & ~SW2 & ~SW4)
+					nextState = S3;
 				else
 					nextState = S2;
 			end
 			S3: begin
-				if(SW1 && !SW2 && !SW3 && !Sw4)
+				if(SW1 & ~SW2 & ~SW3 & ~SW4)
 					nextState = S4;
-				else if(SW2 && !SW1 && !SW3 && !SW4)
+				else if(SW2 & ~SW1 & ~SW3 & ~SW4)
 					nextState = S1;
 				else
 					nextState = S3;
 			end
 			S4: begin
-				if(SW2 && !SW1 && !SW3 && !SW4)
+				if(SW2 & ~SW1 & ~SW3 & ~SW4)
 					nextState = S1;
 				else
 					nextState = S4; 
-			end
-		end	
+			end	
 		endcase
 	end
-	
 endmodule
 
 module FSM_testbench();
@@ -70,7 +72,142 @@ module FSM_testbench();
 	FSM finiteState(clk, reset, SW1, SW2, SW3, SW4, state, Z);
 	
 	initial begin
-	
+      $monitor("reset=%b clk=%b SW1=%b SW2=%b SW3=%b SW4=%b state=%d Z=%b", reset, clk, SW1, SW2, SW3, SW4, state, Z);
+		clk = 1'b0; SW1 = 1'b0; SW2 = 1'b0; SW3 = 1'b0; SW4 = 1'b0;
+		
+		reset = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		reset = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW1 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW1 = 1'b0; #10; 
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b0; #10; 
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW4 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW4 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW3 = 1'b1; #10; 
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW3 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW1 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW1 = 1'b0; #10; 
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW3 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW3 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		#10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		reset = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		reset = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW1 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW1 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW2 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW3 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW3 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW1 = 1'b1; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		SW1 = 1'b0; #10;
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		reset = 1'b1; #10; //SW0!?!
+		clk = 1'b1; #10;
+		clk = 1'b0; #10;
+		reset = 1'b0; #10;		
 		
 	end
 endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
