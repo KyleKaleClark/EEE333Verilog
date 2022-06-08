@@ -35,7 +35,20 @@ module FSM(input clk, reset, SW1, SW2, SW3, SW4, output logic [2:0] state, outpu
 				else
 					nextState = S2;
 			end
-			S3: 
+			S3: begin
+				if(SW1 & !SW2 & !SW3 & !Sw4)
+					nextState = S4;
+				else if(SW2 & !SW1 & !SW3 & !SW4)
+					nextState = S1;
+				else
+					nextState = S3;
+			end
+			S4: begin
+				if(SW2 & !SW1 & !SW3 & !SW4)
+					nextState = S1;
+				else
+					nextState = S4; 
+			end
 		end	
 	end
 	
