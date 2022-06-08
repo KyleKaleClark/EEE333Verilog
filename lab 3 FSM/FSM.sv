@@ -27,7 +27,7 @@ module FSM(input clk, reset, SW1, SW2, SW3, SW4, output logic [2:0] state, outpu
 			S0: begin
 				if(SW1 & ~SW2 & ~SW3 & ~SW4)
 					nextState = S1;
-              	else if(SW3 & ~SW1 & ~SW2 & ~SW4)
+              			else if(SW3 & ~SW1 & ~SW2 & ~SW4)
 					nextState = S3;
 				else
 					nextState = S0;
@@ -41,7 +41,7 @@ module FSM(input clk, reset, SW1, SW2, SW3, SW4, output logic [2:0] state, outpu
 			S2: begin
 				if(SW2 & ~SW1 & ~SW3 & ~SW4)
 					nextState = S1;
-              	else if(SW3 & ~SW1 & ~SW2 & ~SW4)
+              			else if(SW3 & ~SW1 & ~SW2 & ~SW4)
 					nextState = S3;
 				else
 					nextState = S2;
@@ -72,7 +72,7 @@ module FSM_testbench();
 	FSM finiteState(clk, reset, SW1, SW2, SW3, SW4, state, Z);
 	
 	initial begin
-      $monitor("reset=%b clk=%b SW1=%b SW2=%b SW3=%b SW4=%b state=%d Z=%b", reset, clk, SW1, SW2, SW3, SW4, state, Z);
+     		$monitor("reset=%b clk=%b SW1=%b SW2=%b SW3=%b SW4=%b state=%d Z=%b", reset, clk, SW1, SW2, SW3, SW4, state, Z);
 		clk = 1'b0; SW1 = 1'b0; SW2 = 1'b0; SW3 = 1'b0; SW4 = 1'b0;
 		
 		reset = 1'b1; #10;
