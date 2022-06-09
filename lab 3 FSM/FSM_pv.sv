@@ -4,6 +4,14 @@ module FSM_pv(input KEY0, SW0, SW1, SW2, SW3, SW4, output logic [6:0] SEG0, SEG1
 	logic [2:0] state;
 	logic [1:0] Z;
 	
+	/*
+	TODOs:
+		1. Port this, FSM, and ASCII27Seg to Modelsim. Compile, smile when 0 errors
+		2. Port all code to Quartus, set FSM_pv as top-level design
+		3. Set Pins
+		4. Test, photos, and get your powerpoint together!
+		TEST: RESET -> SW1 -> SW2 -> SW3 -> SW1 -> SW0 (reset)
+	*/
 	
 	//if this KEY0 is fucked just throw a fucking ~ at it LOLOL easier to fix here than there B)
 	FSM FSMachine(KEY0, SW0, SW1, SW2, SW3, SW4, state, Z);

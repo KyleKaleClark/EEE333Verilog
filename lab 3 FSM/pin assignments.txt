@@ -1,0 +1,49 @@
+Pin Assignments:
+	KEY0	:	PIN_B8
+	SW0		:	PIN_C10
+	SW1		:	PIN_C11
+	SW2		:	PIN_D12
+	SW3		:	PIN_C12
+	SW4		:	PIN_A12
+	
+	LED_SW0	:	PIN_A8
+	LED_SW1 :	PIN_A9
+	LED_SW2 :	PIN_A10
+	LED_SW3 :	PIN_B10
+	LED_SW4 :	PIN_D13
+	LED_SW5 :	PIN_C13
+	
+	
+	SEG0
+		0	:	PIN_C14
+		1	:	PIN_E15
+		2	:	PIN_C15
+		3	:	PIN_C16
+		4	:	PIN_E16
+		5	:	PIN_D17
+		6	:	PIN_C17
+	SEG1
+		0	:	PIN_C18
+		1	:	PIN_D18
+		2	:	PIN_E18
+		3	:	PIN_B16
+		4	:	PIN_A17
+		5	:	PIN_A18
+		6	:	PIN_B17
+	SEG2
+		0	:	PIN_B20
+		1	:	PIN_A20
+		2	:	PIN_B19
+		3	:	PIN_A21
+		4	:	PIN_B21
+		5	:	PIN_C22
+		6	:	PIN_B22
+	SEG3
+		0	:	PIN_F21
+		1	:	PIN_E22
+		2	:	PIN_E21
+		3	:	PIN_C19
+		4	:	PIN_C20
+		5	:	PIN_D19
+		6	:	PIN_E17
+	
