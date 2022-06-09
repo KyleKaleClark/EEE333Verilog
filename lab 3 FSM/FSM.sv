@@ -64,7 +64,7 @@ module FSM(input clk, reset, SW1, SW2, SW3, SW4, output logic [2:0] state, outpu
 	end
 endmodule
 
-module FSM_testbench();
+module FSM_tb();
 	reg clk, reset, SW1, SW2, SW3, SW4;
 	logic [2:0] state;
 	logic [1:0] Z;

@@ -221,6 +221,12 @@ module ASCII27Seg(input [7:0] AsciiCode, output reg [6:0] HexSeg);
 			end
 		8'h38: HexSeg[0] = 0; //Im unsure how to not turn anything off (?) Could I have just left this entire entry blank? 
 		8'h39: HexSeg[4] = 1;
+		
+		//special characters
+		8'h5F:	begin
+				HexSeg[0] = 1; HexSeg[1] = 1; HexSeg[2] = 1; HexSeg[4] = 1; HexSeg[5] = 1; HexSeg[6] = 1;
+			end
+				
 		default: HexSeg[0] = 0;
 	endcase
 	end //always
