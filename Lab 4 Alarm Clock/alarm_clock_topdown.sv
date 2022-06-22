@@ -49,18 +49,20 @@ endmodule //alarm clock
 
 //====================================================================================================
 
-module timer(input [7:0] clk, reset, set_min, set_hour, output seconds, minutes, hours);
+
+//Timer module works as intended!!!!!!! The only thing thats still questionable is the Frequency Divider!!!!!!!!!!!!!!! BUT LETS GO
+module timer(input clk, input reset, set_min, set_hour, output logic [7:0] seconds, minutes, hours);
 
 	//clk by default will be passed in as 2Hz
 	
 	logic [7:0] clk_min, clk_hr, hourOut, Min_in, Hour_in, Hz1;
-	logic secEn, minEn, hourEn;
+	logic secEn, minEn, hourEn, clk_sec, clk_min, clk_hr;
 	
 	clocktime secClk(clk_sec, secEn, reset, 8'd59, seconds, Min_in);
 	clocktime minClk(clk_min, minEn, reset, 8'd59, minutes, Hour_in);
 	clocktime hourClk(clk_hr, hourEn, reset, 8'd23, hours, hourOut);
 
-	fdivby2 #(8) div2(clk, reset, Hz1);
+	fdivby2 div2(clk, reset, Hz1);
 
 	always_comb begin
 		clk_sec = Hz1; 
@@ -109,13 +111,13 @@ endmodule//clocktimer
 
 //====================================================================================================
 
-module fdivby2 #(parameter Size=8)(input [Size-1:0] clk, reset, output logic [Size-1:0] clkout);
+module fdivby2 (input clk, reset, output logic clkout);
 	
 	always_ff @ (posedge clk or posedge reset) begin
 		if (reset)
-			clkout <= {Size{1'b0}};
+			clkout <= 1'b0;
 		else
-			clkout <= ~clkout;
+			clkout <= ~clk;
 	end
 endmodule
 
