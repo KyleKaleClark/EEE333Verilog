@@ -62,7 +62,55 @@ module timer_tb();
 endmodule
 
 
+module alarmClk();
+	
+	logic clk, reset, time_set, alarm_set, sethrs1min0, run, activatealarm, alarmreset, alrm;
+	logic [7:0] sec, min, hrs, sec_alrm, min_alrm, hrs_alrm;
+	
+	alarm_clock clockalarm(clk, reset, time_set, alarm_set, sethrs1min0, run, activatealarm, alarmreset, sec, min, hrs, sec_alrm, min_alrm, hrs_alrm);
+	
+	initial begin
+	
+		reset = 1'b1; #10; 
+		reset = 1'b0; #10;
+		
+		clk = 1'b0;
+		sethrs1min0 = 1'b1; #10;
+		
+		time_set = 1'b1; #10;
+		
+		repeat(10) begin
+			clk = ~clk; #10;
+		end
+		
+		time_set = 1'b0; alarm_set = 1'b1; #10;
+		repeat(20) begin
+			clk = ~clk; #10;
+		end
+		
+		alarm_set = 1'b0; #10;
+		sethrs1min0 = 1'b0;
+		time_set = 1'b1; #10;
 
+		repeat(14) begin
+			clk = ~clk; #10;
+		end
+		
+		time_set = 1'b0; alarm_set = 1'b1; #10;
+		
+		repeat(14) begin
+			clk = ~clk; #10;
+		end
+		
+		alarm_set = 1'b0; #10;
+		
+		
+		repeat(40) begin
+			clk = ~clk; #10;
+		end
+
+	end
+endmodule
 
 
 

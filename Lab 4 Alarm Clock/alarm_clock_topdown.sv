@@ -36,14 +36,15 @@ endmodule //alarm_clock_pv
 module alarm_clock(input CLK_2Hz, reset, time_set, alarm_set, sethrs1min0, run, activatealarm, alarmreset, output logic [7:0] sec, min, hrs, sec_alrm, min_alrm, hrs_alrm, output logic alrm);
 
 	timer clock(CLK_2Hz, reset, (~sethrs1min0 && time_set), (sethrs1min0 && time_set), sec, min, hrs);
-	timer alarm(CLK_2Hz, reset, (~sethrs1min0 && alarm_set), (sethrs1min0 && alarm_set), sec_alrm, min_alrm, hrs_alrm);
+	timer alarm(1'b0, reset, (~sethrs1min0 && alarm_set), (sethrs1min0 && alarm_set), sec_alrm, min_alrm, hrs_alrm);
 	
 	always_comb begin
 		alrm = 1'b0;
-		if (sec-8'd1==sec_alrm && min == min_alrm && hrs==hrs_alrm) begin
+		if (sec-8'd1==sec_alrm && min == min_alrm && hrs==hrs_alrm && activatealarm) begin
 			alrm = 1'b1;
 		end
-		//if ()
+		if (alarmreset)
+			alrm = 1'b0;
 	end
 endmodule //alarm clock
 
@@ -55,7 +56,7 @@ module timer(input clk, input reset, set_min, set_hour, output logic [7:0] secon
 
 	//clk by default will be passed in as 2Hz
 	
-	logic [7:0] clk_min, clk_hr, hourOut, Min_in, Hour_in, Hz1;
+	//logic [7:0] clk_min, clk_hr, hourOut, Min_in, Hour_in, Hz1;
 	logic secEn, minEn, hourEn, clk_sec, clk_min, clk_hr;
 	
 	clocktime secClk(clk_sec, secEn, reset, 8'd59, seconds, Min_in);
