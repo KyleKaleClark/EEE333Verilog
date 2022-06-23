@@ -2,7 +2,6 @@ module freqDiv_tb();
 	
 	logic clk, clkout;
 	logic reset;
-	//huh i dont think this will work??? base of clk seems weird .........
 	fdivby2 divider(clk, reset, clkout);
 	
 	initial begin
@@ -117,20 +116,4 @@ module alarmClk_tb();
 		
 	end
 endmodule
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
