@@ -1,3 +1,4 @@
+/*
 module alarm_clock_pv(input CLK, SW5, SW4, SW3, SW2, SW1, SW0, KEY1, KEY0, output logic [6:0] SEC_LSD, SEC_MSD, MIN_LSD, MIN_MSD, HR_LSD, HR_MSD, output logic LED7, LED5, LED4, LED3, LED2, LED1, LED0);
 
 	logic [7:0] sec_tens, sec_ones, min_tens, min_ones, hr_tens, hr_ones;
@@ -13,12 +14,12 @@ module alarm_clock_pv(input CLK, SW5, SW4, SW3, SW2, SW1, SW0, KEY1, KEY0, outpu
 	assign min_ones = min%8'd10;
 	assign hr_tens = hr/8'd10; 
 	assign hr_ones = hr%8'd10;
-	ASCII27Seg SevH1(sec_ones, SEC_LSD);
-	ASCII27Seg SevH1(sec_tens, SEC_MSD);
-	ASCII27Seg SevH1(min_ones, MIN_LSD);
-	ASCII27Seg SevH1(min_tens, MIN_MSD);
-	ASCII27Seg SevH1(hr_ones, HR_LSD);
-	ASCII27Seg SevH1(hr_tens, HR_MSD);
+	//ASCII27Seg SevH1(sec_ones, SEC_LSD);
+	//ASCII27Seg SevH1(sec_tens, SEC_MSD);
+	//ASCII27Seg SevH1(min_ones, MIN_LSD);
+	//ASCII27Seg SevH1(min_tens, MIN_MSD);
+	//ASCII27Seg SevH1(hr_ones, HR_LSD);
+	//ASCII27Seg SevH1(hr_tens, HR_MSD);
 
 	//LEDs
 	assign LED7 = alarm;
@@ -30,7 +31,7 @@ module alarm_clock_pv(input CLK, SW5, SW4, SW3, SW2, SW1, SW0, KEY1, KEY0, outpu
 	assign LED0 = SW0;
 
 endmodule //alarm_clock_pv
-
+*/
 //====================================================================================================
 
 module alarm_clock(input CLK_2Hz, reset, time_set, alarm_set, sethrs1min0, run, activatealarm, alarmreset, output logic [7:0] sec, min, hrs, sec_alrm, min_alrm, hrs_alrm, output logic alrm);
