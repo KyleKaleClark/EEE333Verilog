@@ -1,4 +1,13 @@
 /*
+TODO:
+incorporate the RUN variable somewhere int he alarm clock LOL. 
+
+Then just focus on working on physical verification. 
+
+Also bump my code against the lab manual. I think i'm actually pretty close to being done :) 
+
+*/
+
 module alarm_clock_pv(input CLK, SW5, SW4, SW3, SW2, SW1, SW0, KEY1, KEY0, output logic [6:0] SEC_LSD, SEC_MSD, MIN_LSD, MIN_MSD, HR_LSD, HR_MSD, output logic LED7, LED5, LED4, LED3, LED2, LED1, LED0);
 
 	logic [7:0] sec_tens, sec_ones, min_tens, min_ones, hr_tens, hr_ones;
@@ -6,7 +15,7 @@ module alarm_clock_pv(input CLK, SW5, SW4, SW3, SW2, SW1, SW0, KEY1, KEY0, outpu
 	freqDiv divid(CLK, Hz2); //Module to divide 50MHz down to 2Hz
 
 	alarm_clock alarmClk(Hz2, SW0, SW2, SW1, SW3, (SW5 && ~SW1 && ~SW2), SW4, KEY0, sec, min, hrs, secA, minA, hrsA, alarm);
-	
+	/*
 	//draw to segment displays
 	assign sec_tens = sec/8'd10; 
 	assign sec_ones = sec%8'd10;
@@ -14,13 +23,13 @@ module alarm_clock_pv(input CLK, SW5, SW4, SW3, SW2, SW1, SW0, KEY1, KEY0, outpu
 	assign min_ones = min%8'd10;
 	assign hr_tens = hr/8'd10; 
 	assign hr_ones = hr%8'd10;
-	//ASCII27Seg SevH1(sec_ones, SEC_LSD);
-	//ASCII27Seg SevH1(sec_tens, SEC_MSD);
-	//ASCII27Seg SevH1(min_ones, MIN_LSD);
-	//ASCII27Seg SevH1(min_tens, MIN_MSD);
-	//ASCII27Seg SevH1(hr_ones, HR_LSD);
-	//ASCII27Seg SevH1(hr_tens, HR_MSD);
-
+	ASCII27Seg SevH1(sec_ones, SEC_LSD);
+	ASCII27Seg SevH1(sec_tens, SEC_MSD);
+	ASCII27Seg SevH1(min_ones, MIN_LSD);
+	ASCII27Seg SevH1(min_tens, MIN_MSD);
+	ASCII27Seg SevH1(hr_ones, HR_LSD);
+	ASCII27Seg SevH1(hr_tens, HR_MSD);
+	*/
 	//LEDs
 	assign LED7 = alarm;
 	assign LED5 = SW5;
@@ -31,21 +40,26 @@ module alarm_clock_pv(input CLK, SW5, SW4, SW3, SW2, SW1, SW0, KEY1, KEY0, outpu
 	assign LED0 = SW0;
 
 endmodule //alarm_clock_pv
-*/
+
 //====================================================================================================
 
 module alarm_clock(input CLK_2Hz, reset, time_set, alarm_set, sethrs1min0, run, activatealarm, alarmreset, output logic [7:0] sec, min, hrs, sec_alrm, min_alrm, hrs_alrm, output logic alrm);
 
+	logic clk_alarm; 
+	//need to incorporate RUN somewhere??? 
 	timer clock(CLK_2Hz, reset, (~sethrs1min0 && time_set), (sethrs1min0 && time_set), sec, min, hrs);
-	timer alarm(1'b0, reset, (~sethrs1min0 && alarm_set), (sethrs1min0 && alarm_set), sec_alrm, min_alrm, hrs_alrm);
+	timer alarm(clk_alarm, reset, (~sethrs1min0 && alarm_set), (sethrs1min0 && alarm_set), sec_alrm, min_alrm, hrs_alrm);
 	
 	always_comb begin
 		alrm = 1'b0;
+		clk_alarm = 1'b0;
 		if (sec-8'd1==sec_alrm && min == min_alrm && hrs==hrs_alrm && activatealarm) begin
 			alrm = 1'b1;
 		end
 		if (alarmreset)
 			alrm = 1'b0;
+		if (alarm_set)
+			clk_alarm = CLK_2Hz;
 	end
 endmodule //alarm clock
 
@@ -119,7 +133,7 @@ module fdivby2 (input clk, reset, output logic clkout);
 		if (reset)
 			clkout <= 1'b0;
 		else
-			clkout <= ~clk;
+			clkout <= ~clkout;
 	end
 endmodule
 

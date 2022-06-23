@@ -43,31 +43,35 @@ module timer_tb();
 	initial begin
 		reset = 1'b1; #10;
 		reset = 1'b0; #10;
-		
-		repeat (3601) begin
-			clk = ~clk; #10;
-		end
+		clk = 1'b0; 
 		
 		set_hour = 1'b1; #10;
-		repeat (2) begin
-			clk = ~clk;
+		repeat (6) begin
+			clk = ~clk; #10;
 		end
 		set_hour = 1'b0; 
 		
 		set_min = 1'b1; #10;
-		repeat(4) begin
+		repeat(80) begin
 			clk = ~clk; #10;
 		end	
+		set_min = 1'b0; #10;
+
+		repeat (7202) begin
+			clk = ~clk; #10;
+		end
+		
+		
 	end
 endmodule
 
 
-module alarmClk();
+module alarmClk_tb();
 	
 	logic clk, reset, time_set, alarm_set, sethrs1min0, run, activatealarm, alarmreset, alrm;
 	logic [7:0] sec, min, hrs, sec_alrm, min_alrm, hrs_alrm;
 	
-	alarm_clock clockalarm(clk, reset, time_set, alarm_set, sethrs1min0, run, activatealarm, alarmreset, sec, min, hrs, sec_alrm, min_alrm, hrs_alrm);
+	alarm_clock clockalarm(clk, reset, time_set, alarm_set, sethrs1min0, run, activatealarm, alarmreset, sec, min, hrs, sec_alrm, min_alrm, hrs_alrm, alrm);
 	
 	initial begin
 	
@@ -75,40 +79,42 @@ module alarmClk();
 		reset = 1'b0; #10;
 		
 		clk = 1'b0;
-		sethrs1min0 = 1'b1; #10;
 		
-		time_set = 1'b1; #10;
+		alarmreset = 1'b1; #10; clk = 1'b1; #10; clk = 1'b0; #10;
+		alarmreset = 1'b0; #10; clk = 1'b1; #10; clk = 1'b0; #10;
+		activatealarm = 1'b1; 
+		sethrs1min0 = 1'b0; #10;
 		
-		repeat(10) begin
-			clk = ~clk; #10;
-		end
-		
-		time_set = 1'b0; alarm_set = 1'b1; #10;
+		alarm_set = 1'b1; #10;
 		repeat(20) begin
 			clk = ~clk; #10;
-		end
+		end //alarm = 10 minutes
+		sethrs1min0 = 1'b1; #10;
+		repeat(2) begin
+			clk = ~clk; #10;
+		end //alarm = 1 hour
+		alarm_set = 1'b0;
 		
-		alarm_set = 1'b0; #10;
-		sethrs1min0 = 1'b0;
-		time_set = 1'b1; #10;
-
-		repeat(14) begin
+		time_set = 1'b1;
+		sethrs1min0 = 1'b0; #10;
+		
+		
+		
+		///////////////////////////////////////
+		repeat(18) begin
+			clk = ~clk; #10;
+		end //clock = 9 minutes
+		sethrs1min0 = 1'b1;
+		repeat(2) begin
+			clk = ~clk; #10;
+		end //clock = 1 hour
+		time_set = 1'b0; #10;
+		
+		repeat(500) begin
 			clk = ~clk; #10;
 		end
 		
-		time_set = 1'b0; alarm_set = 1'b1; #10;
 		
-		repeat(14) begin
-			clk = ~clk; #10;
-		end
-		
-		alarm_set = 1'b0; #10;
-		
-		
-		repeat(40) begin
-			clk = ~clk; #10;
-		end
-
 	end
 endmodule
 
