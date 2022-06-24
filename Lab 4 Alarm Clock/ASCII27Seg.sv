@@ -6,7 +6,7 @@ module ASCII27Seg(input [7:0] AsciiCode, output reg [6:0] HexSeg);
 	case (AsciiCode)
 		//A / a
 		8'h41: HexSeg[3] = 1;
-		8'h61: HexsSeg[3] = 1;
+		8'h61: HexSeg[3] = 1;
 		//B / b
 		8'h42: begin
 			HexSeg[0] = 1; HexSeg[1] = 1;
@@ -252,6 +252,9 @@ module ASCII27Seg(input [7:0] AsciiCode, output reg [6:0] HexSeg);
 		8'h9: begin
 			HexSeg[4] = 1;
 			end
+		default: HexSeg[1] = 0;
+		endcase
+	end
 endmodule //ascii
 
 
