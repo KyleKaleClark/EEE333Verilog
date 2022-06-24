@@ -13,26 +13,25 @@ module alarm_clock_pv(input CLK, SW5, SW4, SW3, SW2, SW1, SW0, KEY1, KEY0, outpu
 
 	logic [7:0] sec_tens, sec_ones, min_tens, min_ones, hr_tens, hr_ones, sec, min, hrs, secA, minA, hrsA;
 	logic alarm, Hz2;
-	wire clk_2_0hz;
+	//wire clk_2_0hz;
 
 	//freqDiv divid(CLK, Hz2); //Module to divide 50MHz down to 2Hz
 
 	frequencyDivider #(26) Mhz50toHz2(CLK, SW0, 26'd2500000, Hz2);
 	
-	alarm_clock alarmClk(clk_2_0hz, SW0, SW2, SW1, SW3, (SW5 && ~SW1 && ~SW2), SW4, KEY0, sec, min, hrs, secA, minA, hrsA, alarm);
-					//   		clk,       rst, tSet ASet hr/min       run         act-alm alm-res OUTPUTS
+  	alarm_clock alarmClk(Hz2, SW0, (SW2&&KEY1), (SW1&&KEY1), SW3, (SW5 && ~SW1 && ~SW2), SW4, KEY0, sec, min, hrs, secA, minA, hrsA, alarm);
+					//   clk, rst, tSet ASet hr/min       run         act-alm alm-res OUTPUTS
 	
-	always_comb begin
-		clk_2_0hz = 26'd0; 					
+	always_comb begin 					
 		sec_tens = secA/8'd10; 
-		sec_ones = secA%8'd10; //if doesn't default, displays alarm time kinda weird inverse way
+		sec_ones = secA%8'd10; 
 		min_tens = minA/8'd10; 
 		min_ones = minA%8'd10;
 		hr_tens = hrsA/8'd10; 
 		hr_ones = hrsA%8'd10;		//(KEY1 && ~SW1) || (KEY1 && ~SW0)
-		if ((~KEY1 && SW2) || (~KEY1 && SW1) || (KEY1 && ~SW1 && ~SW2)) begin
-			clk_2_0hz = Hz2;
-		end
+		//if ((~KEY1 && SW2) || (~KEY1 && SW1) || (KEY1 && ~SW1 && ~SW2)) begin
+		//	clk_2_0hz = Hz2;
+		//end
 		//else
 			//clk_2_0hz = 1'b0;
 		if(~SW1)begin
@@ -52,14 +51,13 @@ module alarm_clock_pv(input CLK, SW5, SW4, SW3, SW2, SW1, SW0, KEY1, KEY0, outpu
 	//assign hr_tens = hrs/8'd10; 
 	//assign hr_ones = hrs%8'd10;
 	//draw to segment displays
-	
+	//commented out just to compile
 	ASCII27Seg SevH0(sec_ones, SEC_LSD);
 	ASCII27Seg SevH1(sec_tens, SEC_MSD);
 	ASCII27Seg SevH2(min_ones, MIN_LSD);
 	ASCII27Seg SevH3(min_tens, MIN_MSD);
 	ASCII27Seg SevH4(hr_ones, HR_LSD);
 	ASCII27Seg SevH5(hr_tens, HR_MSD);
-	
 	//LEDs
 	assign LED7 = alarm;
 	assign LED5 = SW5;
@@ -76,32 +74,52 @@ endmodule //alarm_clock_pv
 module alarm_clock(input CLK_2Hz, reset, time_set, alarm_set, sethrs1min0, run, activatealarm, alarmreset, output logic [7:0] sec, min, hrs, sec_alrm, min_alrm, hrs_alrm, output logic alrm);
 
 	logic clk_alarm, clk_clk, Hz1; 
+	logic set_alarm;
 	//need to incorporate RUN somewhere??? 
-	timer clock(CLK_2Hz, reset, (~sethrs1min0 && time_set), (sethrs1min0 && time_set), sec, min, hrs);
-	timer alarm(clk_alarm, reset, (~sethrs1min0 && alarm_set), (sethrs1min0 && alarm_set), sec_alrm, min_alrm, hrs_alrm);
+	timer clock(clk_clk, reset, (~sethrs1min0 && time_set), (sethrs1min0 && time_set), sec, min, hrs);
+  	timer alarm(clk_alarm, reset, (~sethrs1min0 && alarm_set), (sethrs1min0 && alarm_set), sec_alrm, min_alrm, hrs_alrm);
 	
 	//freq down to 1 HZ
 	//freqDiv divid(CLK_2Hz, Hz1);
-	frequencyDivider #(2) Mhz50toHz2(CLK_2Hz, reset, 2'd2, Hz1);
+	//frequencyDivider #(2) Mhz50toHz2(CLK_2Hz, reset, 2'd2, Hz1);
 	always_comb begin
 		clk_alarm = 1'b0;
 		clk_clk = 1'b0;
-		alrm = 1'b1; 
-		if (sec-8'd1==sec_alrm && min == min_alrm && hrs==hrs_alrm && activatealarm) begin
-				alrm = 1'b1;
-			end
-		if (alarmreset)
-			alrm = 1'b0;
-		if (alarm_set)
-			clk_alarm = CLK_2Hz;
-		if(time_set)
+		set_alarm = 1'b0; 
+		if (sec-8'd1==sec_alrm && min == min_alrm && hrs==hrs_alrm) begin
+			set_alarm = 1'b1;
+		end
+		//if (alarmreset)
+		//	alrm = 1'b0;
+		//if(set_alarm)
+			//alrm = CLK_2Hz;
+		//if (alarm_set)
+			//clk_alarm = CLK_2Hz;
+		//if(time_set)
+			//clk_clk = CLK_2Hz;
+		if(run || time_set)
 			clk_clk = CLK_2Hz;
-		if(run)
-			clk_clk = Hz1;
+      	if(alarm_set)
+        	clk_alarm = CLK_2Hz; //clock only moves if you're setting alarm
 	end
+  
+	always_ff @(posedge set_alarm or posedge alarmreset or posedge reset) begin
+    	if(alarmreset || reset)
+      		alrm <= 1'b0;
+    	if(activatealarm) begin
+    		if(set_alarm)
+      			alrm <= CLK_2Hz; 
+    		else
+      			alrm <= 1'b0;
+    	end
+    	else
+      		alrm <= 1'b0;
+  	end
+    
+    
 endmodule //alarm clock
 
-//====================================================================================================
+//==========================================================================================
 
 
 //Timer module works as intended!!!!!!! The only thing thats still questionable is the Frequency Divider!!!!!!!!!!!!!!! BUT LETS GO
@@ -116,8 +134,8 @@ module timer(input clk, input reset, set_min, set_hour, output logic [7:0] secon
 	clocktime minClk(clk_min, minEn, reset, 8'd59, minutes, Hour_in);
 	clocktime hourClk(clk_hr, hourEn, reset, 8'd23, hours, hourOut);
 
-	fdivby2 div2(clk, reset, Hz1);
-
+	//fdivby2 div2(clk, reset, Hz1);
+	frequencyDivider #(2) Mhz50toHz2(clk, reset, 2'd2, Hz1);
 	always_comb begin
 		clk_sec = Hz1; 
 		clk_min = Min_in;
@@ -183,14 +201,3 @@ module frequencyDivider#(parameter Size = 26)(input clk, reset, input [Size-1:0]
 endmodule
 
 //====================================================================================================
-
-module fdivby2 (input clk, reset, output logic clkout);
-	
-	always_ff @ (posedge clk or posedge reset) begin
-		if (reset)
-			clkout <= 1'b0;
-		else
-			clkout <= ~clkout;
-	end
-endmodule
-
