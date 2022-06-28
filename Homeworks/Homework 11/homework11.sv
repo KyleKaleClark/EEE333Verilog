@@ -46,7 +46,7 @@ module filterf_tb();
 	initial begin
 		fr = $fopen("xinput.csv", "r");
 		fc = $fopen("coef.csv", "r");
-		fd = $fopen("Filterma.csv");
+		fd = $fopen("filterma.csv");
 		$fwrite(fd, "#, X, Y\n");
 		for(i=0; i<Size; i=i+1)
 			err = $fscanf(fc, "%d", Coef.Z[i]);
