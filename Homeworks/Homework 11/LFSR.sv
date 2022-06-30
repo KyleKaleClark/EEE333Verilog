@@ -53,7 +53,7 @@ module LFSR_tb();
 		reset = 1'b0; #10;
 		
 		repeat(6)begin
-			clk = ~clk;
+			clk = ~clk; #10;
 		end //RandomNum should equal 255 / 8'b11111111
 		
 		load = 1'b1; #10; //release send in the value
