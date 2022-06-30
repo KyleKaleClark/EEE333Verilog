@@ -113,22 +113,69 @@ module Control(input clk, reset, input [3:0] OPCODE, input [1:0] current_state, 
 			FD: nextstate = EX; //might need to break these down to conditionals based off the OPCODE
 			EX: nextstate = RWB;
 			RWB: nextstate = IF;
+			default: nextstate = state;
 		endcase
 	end
 endmodule
 
+module ALU(input [3:0] OPCODE, RA, RB, input [7:0] A, B, PC output logic [7:0] alu_out, nextPC);
 
-
-
-
-
-
-
-
-
-
-
-
+	always_comb begin
+		alu_out = 8'd0;
+		nextPC = PC;
+		
+		case(OPCODE)
+			4'h1: begin
+				alu_out = A + B;
+				end
+			4'h2: begin
+				alu_out = {RA, RB};
+				end
+			4'h3: begin
+				alu_out = A - B;
+				end
+			4'h4: begin
+				alu_out = A + RB;
+				end
+			4'h5: begin
+				alu_out = A/B;
+				end
+			4'h6: begin
+				alu_out = A*B;
+				end
+			4'h7: begin
+				alu_out = B - 8'd1;
+				end
+			4'h8: begin
+				alu_out = B + 8'd1;
+				end
+			4'h9: begin
+				alu_out = ~(A | B);
+				end
+			4'hA: begin
+				alu_out = ~(A&B);
+				end
+			4'hB: begin
+				alu_out = (A^B);
+				end
+			4'hC: begin
+				alu_out = ~B;
+				end
+			4'hD: begin
+					if (A >= B) begin
+						nextPC = PC + alu_out;
+					end
+				end
+			4'hE: begin
+				nextPC = alu_out;
+				end
+			4'hF: begin
+				//halt somehow................ 
+				nextPC = 8'd0; //?? perchance
+				end
+		endcase
+	end
+endmodule
 
 module RegFile(
 	input clk, reset,
