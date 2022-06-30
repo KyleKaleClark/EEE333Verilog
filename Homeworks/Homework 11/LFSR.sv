@@ -1,9 +1,9 @@
 module LFSR8bit(input clk, reset, load, input [7:0] seed, output [7:0] randomNum, output randomBit);
 	
 	logic nextbit;
-	logic [7:0] state_in;
+	logic [7:0] state_in, state_out;
 	
-	MUX21 #(8) muxr (seed, {state_out[Width-2:0], nextbit}, load, state_in);
+	MUX21 #(8) muxr (seed, {state_out[6:0], nextbit}, load, state_in);
 	DReg #(8) dregg (state_in, clk, reset, state_out);
 	
 	assign nextbit = ( ((state_out[7] ^ state_out[5]) ^ state_out[4]) ^ state_out[3]);
@@ -47,14 +47,21 @@ module LFSR_tb();
 		//load to file stuff around here :) 
 		fd = $fopen("randomNumbers.csv");
 		
-		seed = 7'b11111111; reset = 1'b1; load = 1'b0; clk = 1'b0; #10;
+		seed = 8'b11111111; reset = 1'b1; load = 1'b0; clk = 1'b0; #10;
 		reset = 1'b0; #10;
 		
-		load = 1'b1; #10;
 		
+		load = 1'b0; #10; 
+		repeat(4) begin
+			clk = ~clk; #10;
+		end
+		load = 1'b1; #10;
+		load = 1'b0; #10;
+		load = 1'b1; #10;
 		repeat(20) begin
-			clk = ~clk;
-			$display("randomNum=%d", randomNum);
+			clk = ~clk; #10;
+			//load = ~load; #10;
+			$display("clk=%b, randomNum=%d", clk, randomNum);
 			$fwrite(fd, "%d", randomNum);
 		end
 		$fclose(fd);
