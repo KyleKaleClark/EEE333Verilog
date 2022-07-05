@@ -1,3 +1,10 @@
+/*
+TODOs:
+Cout 
+physical implementation
+and UH i think thats it :D
+*/
+/*
 module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevSeg5, SevSeg4, SevSeg3, SevSeg2, SevSeg1, SevSeg0, output logic LED0, LED1, LED2, LED3, LED4, LED5, LED6, LED7);
 	
 	//CLK - 50MHz to div to 1000Hz	SW0 - Asynch Reset	SW1 - Single Step [0-Auto Mode, 1-Single Step] 
@@ -76,16 +83,18 @@ module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevS
 	
 
 endmodule
-
+*/
 module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] State, output logic [7:0] PC, Alu_out, W_Reg, output logic Cout, OF);
+	localparam IF = 2'b00, FD = 2'b01, EX = 2'b10, RWB = 2'b11;
 	
-	logic [7:0] A, B, nextPC, alu_out;
+	logic [7:0] A, B, nextPC;
 	logic [15:0] IR;
-	logic RA, RB, RD;
+	logic [3:0] RA, RB, RD;
+	logic [1:0] nextstate;
 	//logic [1:0] State; hartin put this here but i'm CONFIDENT its an accident 
 	
 	
-	localparam IF = 2'b00, FD = 2'b01, EX = 2'b10, RWB = 2'b11;
+	
 	//localparam ADD=4'b0001 ...
 
 	
@@ -97,7 +106,15 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 	RegFile Reg8bit(clk, reset, RA, RB, RD, OPCODE, State, W_Reg, A, B);
 	
 	//ALU
-	ALU alu (OPCODE, RA, RB, A, B, PC, alu_out, nextPC);
+	ALU alu (OPCODE, RA, RB, A, B, PC, Alu_out);
+	
+	//Instruction register via contin assigns
+	assign OPCODE = IR[15:12];
+	assign RA = IR[11:8];
+	assign RB = IR[7:4];
+	assign RD = IR[3:0];
+	assign OF = (~A[7]^B[7])&Alu_out[7];
+	 //Completely redundant I know
 		//ir[11:8], ir[7:4], ir[3:0], ir[15:12], 
 		//current_state, RF_data_in, //how i initially did it 
 		//RF_data_out0, RF_data_out1);
@@ -108,11 +125,7 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 	//or it will go to PC
 	//PC needs to increment i THINK?!
 	
-	//Instruction register via contin assigns
-	assign OPCODE = IR[15:12];
-	assign RA = IR[11:8];
-	assign RB = IR[7:4];
-	assign RD = IR[3:0];
+
 	
 	// W register
 	always_ff @(posedge clk or posedge reset) begin
@@ -124,15 +137,15 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 		else begin
 			PC <= nextPC;
 			State <= nextstate;
-			W_Reg <= alu_out;
-		end
+			W_Reg <= Alu_out;
+			end
 	end
 	
 	//control state machine
 	always_comb begin
 		nextstate = State;
 		nextPC = PC;
-		case(current_state)
+		case(State)
 			IF: nextstate = FD;
 			FD: nextstate = EX; //might need to break these down to conditionals based off the OPCODE
 			EX: nextstate = RWB;
@@ -147,7 +160,11 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 						nextPC = PC + RD;
 						end
 					end
+				else if(OPCODE == 4'hF) begin
+					nextPC = PC;
+					end
 				end
+				
 			default: begin
 				nextstate = State;
 				nextPC = PC;
@@ -159,11 +176,9 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 		//he created his ALU here, but i'd honestly prefer to module it out
 		//endcase
 	//end
-	
-	
-	
-endmodule 
 
+endmodule 
+/* professor just incorporated this in the lab5 module
 module Control(input clk, reset, input [3:0] OPCODE, input [1:0] current_state, output [1:0] state);
 	
 	localparam IF = 2'b00, FD = 2'b01, EX = 2'b10, RWB = 2'b11; 
@@ -188,8 +203,8 @@ module Control(input clk, reset, input [3:0] OPCODE, input [1:0] current_state, 
 		endcase
 	end
 endmodule
-
-module ALU(input [3:0] OPCODE, RA, RB, input [7:0] A, B, PC output logic [7:0] alu_out);
+*/
+module ALU(input [3:0] OPCODE, RA, RB, input [7:0] A, B, PC, output logic [7:0] alu_out);
 	//localparam ADD = 4'h1,
 	always_comb begin
 		alu_out = 8'd0;

@@ -1,0 +1,133 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/Users/Kyle/Desktop/school notes/EEE333/Homework 11
+vALU
+Z0 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
+Z1 !s110 1656987945
+!i10b 1
+!s100 d1l;HR=LTBUgANY5ojTAD1
+IT;5<R3cijeeN_ZnG=BD?61
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+Z3 !s105 lab5_pv_sv_unit
+S1
+Z4 dC:/Users/Kyle/Documents/GitHub/EEE333Verilog/Lab 5 Microprocessor
+Z5 w1656987915
+Z6 8C:/Users/Kyle/Documents/GitHub/EEE333Verilog/Lab 5 Microprocessor/lab5_pv.sv
+Z7 FC:/Users/Kyle/Documents/GitHub/EEE333Verilog/Lab 5 Microprocessor/lab5_pv.sv
+L0 200
+Z8 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z9 !s108 1656987945.000000
+Z10 !s107 C:/Users/Kyle/Documents/GitHub/EEE333Verilog/Lab 5 Microprocessor/lab5_pv.sv|
+Z11 !s90 -reportprogress|300|-work|_lab5|-sv|-stats=none|C:/Users/Kyle/Documents/GitHub/EEE333Verilog/Lab 5 Microprocessor/lab5_pv.sv|
+!i113 1
+Z12 o-work _lab5 -sv
+Z13 tCvgOpt 0
+n@a@l@u
+vlab5
+R0
+R1
+!i10b 1
+!s100 l<:b8GYAYDZR4g3F=2W102
+I:1dCYnOBL<ADkh0gSkK^30
+R2
+R3
+S1
+R4
+R5
+R6
+R7
+L0 81
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+R13
+vpmcntr
+R0
+R1
+!i10b 1
+!s100 dWne@V1o23ZkCe_nT`iCd1
+ICnFY9Z;d>HQ@_dBh[Sm><3
+R2
+R3
+S1
+R4
+R5
+R6
+R7
+L0 324
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+R13
+vRegFile
+R0
+R1
+!i10b 1
+!s100 BnWN6g=j8>`mSLkjFTWSS3
+I8Mcm=:iamEYFd?do@:z1G1
+R2
+R3
+S1
+R4
+R5
+R6
+R7
+L0 262
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+R13
+n@reg@file
+vROM
+R0
+R1
+!i10b 1
+!s100 L]le:Z6C@`hlA[Y`RTUbR2
+IY0QS4O:UCWLZWafm_jU=n0
+R2
+R3
+S1
+R4
+R5
+R6
+R7
+L0 295
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+R13
+n@r@o@m
