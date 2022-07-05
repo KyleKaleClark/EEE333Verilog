@@ -1,7 +1,7 @@
 # EEE333Verilog
-Verilog code for EEE 333 
+Verilog code for a class (Name witheld to prevent Academic Integrity issues) 
 
-Just a collection of code for EEE 333 at ASU. Uploaded so I could transfer files between work and home. No intent for this to be copied by anyone.
+Just a collection of code for Verilog course. Uploaded so I could transfer files between work and home. No intent for this to be copied by anyone.
 
 Please do not cheat / commit academic integrity violations. 
 
