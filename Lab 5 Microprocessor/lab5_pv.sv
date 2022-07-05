@@ -77,19 +77,90 @@ module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevS
 
 endmodule
 
-module lab5(input clk, reset, output logic [1:0] State, output logic [7:0] PC, Alu_out, W_Reg, output logic Cout, OF);
+module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] State, output logic [7:0] PC, Alu_out, W_Reg, output logic Cout, OF);
 	
-	ROM InstrMemory(PC, ir);
-	RegFile Reg8bit(clk, reset,
-		ir[11:8], ir[7:4], ir[3:0], ir[15:12], 
-		current_state, RF_data_in, //output of the W Register
-		RF_data_out0, RF_data_out1);
+	logic [7:0] A, B, nextPC, alu_out;
+	logic [15:0] IR;
+	logic RA, RB, RD;
+	//logic [1:0] State; hartin put this here but i'm CONFIDENT its an accident 
+	
+	
+	localparam IF = 2'b00, FD = 2'b01, EX = 2'b10, RWB = 2'b11;
+	//localparam ADD=4'b0001 ...
+
+	
+	//instantiations
+	//ROM
+	ROM Prog1(PC, IR);
+	
+	//REGFile
+	RegFile Reg8bit(clk, reset, RA, RB, RD, OPCODE, State, W_Reg, A, B);
+	
+	//ALU
+	ALU alu (OPCODE, RA, RB, A, B, PC, alu_out, nextPC);
+		//ir[11:8], ir[7:4], ir[3:0], ir[15:12], 
+		//current_state, RF_data_in, //how i initially did it 
+		//RF_data_out0, RF_data_out1);
 		
 	//control Module determine state
 	//ALU will input the RF_data_out0/1
 	//W Register will output RF_data_in to go into reg file
 	//or it will go to PC
 	//PC needs to increment i THINK?!
+	
+	//Instruction register via contin assigns
+	assign OPCODE = IR[15:12];
+	assign RA = IR[11:8];
+	assign RB = IR[7:4];
+	assign RD = IR[3:0];
+	
+	// W register
+	always_ff @(posedge clk or posedge reset) begin
+		if(reset) begin
+			PC <= 8'd0;
+			State <= IF;
+			W_Reg <= 8'd0;
+			end
+		else begin
+			PC <= nextPC;
+			State <= nextstate;
+			W_Reg <= alu_out;
+		end
+	end
+	
+	//control state machine
+	always_comb begin
+		nextstate = State;
+		nextPC = PC;
+		case(current_state)
+			IF: nextstate = FD;
+			FD: nextstate = EX; //might need to break these down to conditionals based off the OPCODE
+			EX: nextstate = RWB;
+			RWB: begin
+				nextstate = IF;
+				// set PC based on going to the next instruction (? this might be our skips) based on OPCODE
+				nextPC = PC + 8'd1; //jumps handled below //A HALT would just not increment PC
+				if(OPCODE == 4'hE)
+					nextPC = {RA, RB};
+				else if (OPCODE == 4'hD) begin
+					if (A >= B) begin
+						nextPC = PC + RD;
+						end
+					end
+				end
+			default: begin
+				nextstate = State;
+				nextPC = PC;
+				end
+		endcase
+	end
+	//always_comb begin
+	//	case(OPCODE)
+		//he created his ALU here, but i'd honestly prefer to module it out
+		//endcase
+	//end
+	
+	
 	
 endmodule 
 
@@ -118,14 +189,14 @@ module Control(input clk, reset, input [3:0] OPCODE, input [1:0] current_state, 
 	end
 endmodule
 
-module ALU(input [3:0] OPCODE, RA, RB, input [7:0] A, B, PC output logic [7:0] alu_out, nextPC);
-
+module ALU(input [3:0] OPCODE, RA, RB, input [7:0] A, B, PC output logic [7:0] alu_out);
+	//localparam ADD = 4'h1,
 	always_comb begin
 		alu_out = 8'd0;
-		nextPC = PC;
+		//nextPC = PC;
 		
 		case(OPCODE)
-			4'h1: begin
+			4'h1: begin //Add
 				alu_out = A + B;
 				end
 			4'h2: begin
@@ -161,17 +232,20 @@ module ALU(input [3:0] OPCODE, RA, RB, input [7:0] A, B, PC output logic [7:0] a
 			4'hC: begin
 				alu_out = ~B;
 				end
-			4'hD: begin
+			/*4'hD: begin
 					if (A >= B) begin
 						nextPC = PC + alu_out;
 					end
 				end
 			4'hE: begin
-				nextPC = alu_out;
+				nextPC = alu_out;		//these jumps are taken care of in the lab portion above
 				end
 			4'hF: begin
 				//halt somehow................ 
 				nextPC = 8'd0; //?? perchance
+				end*/ 
+			default: begin 
+				alu_out = 8'd0;
 				end
 		endcase
 	end
@@ -198,12 +272,13 @@ module RegFile(
 				RF[i] <= 8'd0;
 			end
 		end
-		else if(current_state == FD) begin
+		else begin
 			RF_data_out0 <= RF[RA];
 			RF_data_out1 <= RF[RB];
-		end
-		else if (current_state == RWB && OPCODE <= 4'b1100) begin
-			RF[RD] <= RF_data_in;
+		
+			if (current_state == RWB && ~(OPCODE == 4'd13 || OPCODE == 4'd14 || OPCODE == 4'd15)) begin
+				RF[RD] <= RF_data_in;
+			end
 		end
 	end
 
