@@ -4,7 +4,6 @@ Cout
 physical implementation
 and UH i think thats it :D
 */
-/*
 module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevSeg5, SevSeg4, SevSeg3, SevSeg2, SevSeg1, SevSeg0, output logic LED0, LED1, LED2, LED3, LED4, LED5, LED6, LED7);
 	
 	//CLK - 50MHz to div to 1000Hz	SW0 - Asynch Reset	SW1 - Single Step [0-Auto Mode, 1-Single Step] 
@@ -14,14 +13,12 @@ module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevS
 	logic Hz1k, clockStepOrAuto, cout, of;
 	logic [1:0] state;
 	logic [7:0] pc, alu_out, w_reg;
-	logic [5:0] opcode;
+	logic [3:0] opcode;
 	logic [7:0] seg [5:0];
 	//Freq div 50Mhz to 1kHz
 	pmcntr #(16) MHz50toHz1k(clk, SW0, 16'd50000, count, Hz1k); 
-
 	//the actual thing
-	lab5 lab(clockStepOrAuto, SW0, state, pc, alu_out, w_reg, cout, of);
-	
+	lab5 lab(clockStepOrAuto, SW0, opcode, state, pc, alu_out, w_reg, cout, of);
 	//auto mode vs single step mode;
 	always_comb begin
 		clockStepOrAuto = Hz1k;
@@ -47,14 +44,41 @@ module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevS
 			seg[4] = "L";
 			seg[5] = "C";
 		end
-		if(SW4 && SW3 && ~SW2)
-			seg = pc[5:0]; //feel like this isn't right since they're different lenghts??? same for below ones
-		else if (SW4 && ~SW3 && SW2) 
-			seg = w_reg[5:0];
-		else if (~SW4 && SW3 && SW2)
-			seg = alu_out[5:0];
-		else if (SW4 && SW3 && SW2)
-			seg = opcode; //need to retrieve opcode somehow..... prob need to retreive above same way.
+		//if you want to display has HEX you need to do it in the ASCII27Seg module. literally change the display, mod and div by 16
+		if(SW4 && SW3 && ~SW2) begin //Point Counter
+			//seg = pc[5:0]; //feel like this isn't right since they're different lenghts??? same for below ones
+			seg[5] = "P";
+			seg[4] = "C";
+			seg[3] = "d";
+			seg[2] = "'";
+			seg[1] = pc/8'd10;
+			seg[0] = pc%8'd10;
+			end
+		else if (SW4 && ~SW3 && SW2) begin //W_reg Value
+			seg[5] = "W";
+			seg[4] = "R";
+			seg[3] = "d";
+			seg[2] = "'";
+			seg[1] = w_reg/8'd10;
+			seg[0] = w_reg%8'd10;
+			end
+		else if (~SW4 && SW3 && SW2) begin //Alu Out Value
+			seg[5] = "A";
+			seg[4] = "L";
+			seg[3] = "U";
+			seg[2] = "'";
+			seg[1] = alu_out/8'd10;
+			seg[0] = alu_out%8'd10;
+			end
+		else if (SW4 && SW3 && SW2) begin //OPCODE
+			//need to retrieve opcode somehow..... prob need to retreive above same way.
+			seg[5] = "O";
+			seg[4] = "P";
+			seg[3] = opcode[3];
+			seg[2] = opcode[2];
+			seg[1] = opcode[1];
+			seg[0] = opcode[0];
+			end
 		else begin
 			seg[0] = "";
 			seg[1] = "";
@@ -81,9 +105,10 @@ module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevS
 	assign LED6 = pc[6];
 	assign LED7 = pc[7];
 	
-
+	
+	
 endmodule
-*/
+
 module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] State, output logic [7:0] PC, Alu_out, W_Reg, output logic Cout, OF);
 	localparam IF = 2'b00, FD = 2'b01, EX = 2'b10, RWB = 2'b11;
 	
@@ -95,8 +120,16 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 	
 	
 	
-	//localparam ADD=4'b0001 ...
-
+	//csv write, comment out for physical
+	///*
+	integer fd; 
+	always_comb begin
+		fd = $fopen("log.csv");
+		if(State==2'b10) begin
+			$fwrite(fd, "%h, %h, %h, %h, %h, %h, %h, %h, %h \n", PC, IR, OPCODE, RA, RB, RD, W_Reg, Cout, OF);
+		end
+	end
+	//*/
 	
 	//instantiations
 	//ROM
@@ -113,7 +146,6 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 	assign RA = IR[11:8];
 	assign RB = IR[7:4];
 	assign RD = IR[3:0];
-	assign OF = (~A[7]^B[7])&Alu_out[7];
 	 //Completely redundant I know
 		//ir[11:8], ir[7:4], ir[3:0], ir[15:12], 
 		//current_state, RF_data_in, //how i initially did it 
@@ -124,7 +156,18 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 	//W Register will output RF_data_in to go into reg file
 	//or it will go to PC
 	//PC needs to increment i THINK?!
-	
+	always_comb begin
+		OF = 1'b0;
+		Cout = 1'b0;
+		if (OPCODE == 4'b0001 || OPCODE == 4'b0011 || OPCODE == 4'b0100 || OPCODE == 4'b0101 || OPCODE == 4'b0110 || OPCODE == 4'b0111 || OPCODE == 4'b1000 || OPCODE == 4'b0001) begin
+			OF = (~A[7]^B[7])&Alu_out[7];
+			Cout = A[7] + B[7];
+		end
+		else begin
+			OF = 1'b0;
+			Cout = 1'b0;
+		end
+	end
 
 	
 	// W register
@@ -171,11 +214,9 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 				end
 		endcase
 	end
-	//always_comb begin
-	//	case(OPCODE)
-		//he created his ALU here, but i'd honestly prefer to module it out
-		//endcase
-	//end
+
+
+	
 
 endmodule 
 /* professor just incorporated this in the lab5 module
@@ -341,15 +382,3 @@ module pmcntr #(parameter siz=5) (input clk, reset, input [siz-1:0] count_max, o
 			clkout <= ~clkout;  
 		end 
 endmodule 
-
-
-
-
-
-
-
-
-
-
-
-
