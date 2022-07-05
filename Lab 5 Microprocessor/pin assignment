@@ -1,0 +1,69 @@
+Pin Assignments
+Write into .qsf file
+
+
+set_location_assignment PIN_N14 -to clk
+
+set_location_assignment PIN_C10 -to SW0
+set_location_assignment PIN_C11 -to SW1
+set_location_assignment PIN_D12 -to SW2
+set_location_assignment PIN_C12 -to SW3
+set_location_assignment PIN_A12 -to SW4
+
+set_location_assignment PIN_B8 -to KEY0
+
+set_location_assignment PIN_A8 -to LED0
+set_location_assignment PIN_A9 -to LED1
+set_location_assignment PIN_A10 -to LED2
+set_location_assignment PIN_B10 -to LED3
+set_location_assignment PIN_D13 -to LED4
+set_location_assignment PIN_C13 -to LED5
+set_location_assignment PIN_D14 -to LED7
+
+set_location_assignment PIN_C14 -to SevSeg0[0]
+set_location_assignment PIN_E15 -to SevSeg0[1]
+set_location_assignment PIN_C15 -to SevSeg0[2]
+set_location_assignment PIN_C16 -to SevSeg0[3]
+set_location_assignment PIN_E16 -to SevSeg0[4]
+set_location_assignment PIN_D17 -to SevSeg0[5]
+set_location_assignment PIN_C17 -to SevSeg0[6]
+
+set_location_assignment PIN_C18 -to SevSeg1[0]
+set_location_assignment PIN_D18 -to SevSeg1[1]
+set_location_assignment PIN_E18 -to SevSeg1[2]
+set_location_assignment PIN_B16 -to SevSeg1[3]
+set_location_assignment PIN_A17 -to SevSeg1[4]
+set_location_assignment PIN_A18 -to SevSeg1[5]
+set_location_assignment PIN_B17 -to SevSeg1[6]
+
+set_location_assignment PIN_B20 -to SevSeg2[0]
+set_location_assignment PIN_A20 -to SevSeg2[1]
+set_location_assignment PIN_B19 -to SevSeg2[2]
+set_location_assignment PIN_A21 -to SevSeg2[3]
+set_location_assignment PIN_B21 -to SevSeg2[4]
+set_location_assignment PIN_C22 -to SevSeg2[5]
+set_location_assignment PIN_B22 -to SevSeg2[6]
+
+set_location_assignment PIN_F21 -to SevSeg3[0]
+set_location_assignment PIN_E22 -to SevSeg3[1]
+set_location_assignment PIN_E21 -to SevSeg3[2]
+set_location_assignment PIN_C19 -to SevSeg3[3]
+set_location_assignment PIN_C20 -to SevSeg3[4]
+set_location_assignment PIN_D19 -to SevSeg3[5]
+set_location_assignment PIN_E17 -to SevSeg3[6]
+
+set_location_assignment PIN_F18 -to SevSeg4[0]
+set_location_assignment PIN_E20 -to SevSeg4[1]
+set_location_assignment PIN_E19 -to SevSeg4[2]
+set_location_assignment PIN_J18 -to SevSeg4[3]
+set_location_assignment PIN_H19 -to SevSeg4[4]
+set_location_assignment PIN_F19 -to SevSeg4[5]
+set_location_assignment PIN_F20 -to SevSeg4[6]
+
+set_location_assignment PIN_J20 -to SevSeg5[0]
+set_location_assignment PIN_K20 -to SevSeg5[1]
+set_location_assignment PIN_L18 -to SevSeg5[2]
+set_location_assignment PIN_N18 -to SevSeg5[3]
+set_location_assignment PIN_M20 -to SevSeg5[4]
+set_location_assignment PIN_N19 -to SevSeg5[5]
+set_location_assignment PIN_N20 -to SevSeg5[6]
