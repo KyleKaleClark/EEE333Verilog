@@ -227,6 +227,10 @@ module ASCII27Seg(input [7:0] AsciiCode, output reg [6:0] HexSeg);
 			HexSeg[0] = 1; HexSeg[2] = 1; HexSeg[3] = 1; HexSeg[4] = 1; HexSeg[5] = 1; HexSeg[6] = 1;
 		end
 		
+		8'h20: begin // [Space]
+			HexSeg[0] = 1; HexSeg[1] = 1; HexSeg[2] = 1; HexSeg[3] = 1; HexSeg[4] = 1; HexSeg[5] = 1; HexSeg[6] = 1;
+		end
+		
 		//Integers
 		8'h0: begin
 			HexSeg[6] = 1;
@@ -257,6 +261,30 @@ module ASCII27Seg(input [7:0] AsciiCode, output reg [6:0] HexSeg);
 		8'h9: begin
 			HexSeg[4] = 1;
 			end
+		
+		//Hex Values
+		8'hA: HexSeg[3] = 1;
+		
+		8'hB: begin
+			HexSeg[0] = 1; HexSeg[1] = 1;
+			end
+			
+		8'hC: begin
+			HexSeg[1] = 1; HexSeg[2] = 1; HexSeg[6] = 1;
+			end
+		
+		8'hD: begin
+			HexSeg[5] = 1; HexSeg[0] = 1;
+			end
+			
+		8'hE: begin
+			HexSeg[1] = 1; HexSeg[2] = 1;
+			end
+			
+		8'hF: begin
+			HexSeg[1] = 1; HexSeg[2] = 1; HexSeg[3] = 1;
+			end
+			
 		default: HexSeg[1] = 0;
 		endcase
 	end
