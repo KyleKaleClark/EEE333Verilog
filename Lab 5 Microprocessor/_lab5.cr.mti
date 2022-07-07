@@ -1,1 +1,13 @@
+{C:/Users/Kyle/Documents/GitHub/EEE333Verilog/Lab 5 Microprocessor/lab5_pv.sv} {1 {vlog -work _lab5 -sv -stats=none {C:/Users/Kyle/Documents/GitHub/EEE333Verilog/Lab 5 Microprocessor/lab5_pv.sv}
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module lab5_pv
+-- Compiling module lab5
+-- Compiling module ALU
+-- Compiling module RegFile
+-- Compiling module ROM
+-- Compiling module pmcntr
 
+Top level modules:
+	lab5_pv
+
+} {} {}}
