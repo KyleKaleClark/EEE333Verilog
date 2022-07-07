@@ -30,22 +30,22 @@ module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevS
 	
 	//Segment Display Comb logic
 	always_comb begin
-		seg[0] = "";
-		seg[1] = "";
-		seg[2] = "";
-		seg[3] = "";
-		seg[4] = "";
-		seg[5] = "";
+		seg[0] = " ";
+		seg[1] = " ";
+		seg[2] = " ";
+		seg[3] = " ";
+		seg[4] = " ";
+		seg[5] = " ";
 		if (~SW4 && ~SW3 && ~SW2) begin
-			seg[0] = "";
-			seg[1] = "K";
-			seg[2] = "R";
-			seg[3] = "A";
-			seg[4] = "L";
 			seg[5] = "C";
+			seg[4] = "L";
+			seg[3] = "A";
+			seg[2] = "R";
+			seg[1] = "K";
+			seg[0] = " ";
 		end
 		//if you want to display has HEX you need to do it in the ASCII27Seg module. literally change the display, mod and div by 16
-		if(SW4 && SW3 && ~SW2) begin //Point Counter
+		else if(SW4 && SW3 && ~SW2) begin //Point Counter
 			//seg = pc[5:0]; //feel like this isn't right since they're different lenghts??? same for below ones
 			seg[5] = "P";
 			seg[4] = "C";
@@ -80,12 +80,12 @@ module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevS
 			seg[0] = opcode[0];
 			end
 		else begin
-			seg[0] = "";
-			seg[1] = "";
-			seg[2] = "";
-			seg[3] = "";
-			seg[4] = "";
-			seg[5] = "";
+			seg[0] = " ";
+			seg[1] = " ";
+			seg[2] = " ";
+			seg[3] = " ";
+			seg[4] = " ";
+			seg[5] = " ";
 		end
 	end
 	ASCII27Seg SevH0(seg[0], SevSeg0);
@@ -121,7 +121,7 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 	
 	
 	//csv write, comment out for physical
-	///*
+	
 	integer fd; 
 	always_comb begin
 		fd = $fopen("log.csv");
@@ -129,7 +129,7 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 			$fwrite(fd, "%h, %h, %h, %h, %h, %h, %h, %h, %h \n", PC, IR, OPCODE, RA, RB, RD, W_Reg, Cout, OF);
 		end
 	end
-	//*/
+	
 	
 	//instantiations
 	//ROM
