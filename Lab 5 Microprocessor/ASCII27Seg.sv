@@ -52,10 +52,10 @@ module ASCII27Seg(input [7:0] AsciiCode, output reg [6:0] HexSeg);
 		
 		// H / h
 		8'h48: begin
-			HexSeg[0] = 1; HexSeg[3] = 1;
+			HexSeg[0] = 1; HexSeg[3] = 1; HexSeg[1] = 1;
 			end
 		8'h68: begin
-			HexSeg[0] = 1; HexSeg[3] = 1;
+			HexSeg[0] = 1; HexSeg[3] = 1; HexSeg[1] = 1;
 			end
 			
 		// I / i	

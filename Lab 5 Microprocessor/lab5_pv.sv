@@ -1,8 +1,6 @@
 /*
 TODOs:
-Cout 
-physical implementation
-and UH i think thats it :D
+Nothing just turn in :)
 */
 module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevSeg5, SevSeg4, SevSeg3, SevSeg2, SevSeg1, SevSeg0, output logic LED0, LED1, LED2, LED3, LED4, LED5, LED6, LED7);
 	
@@ -17,7 +15,7 @@ module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevS
 	logic [7:0] seg [5:0];
 	//Freq div 50Mhz to 1kHz
 	pmcntr #(16) MHz50toHz1k(clk, SW0, 16'd50000, count, Hz1k); 
-	//the actual thing
+	//the actual thing, the real deal, THE lab, the processor, the work, the project. This is IT. (Unbelievable) Believe it
 	lab5 lab(clockStepOrAuto, SW0, opcode, state, pc, alu_out, w_reg, cout, of);
 	//auto mode vs single step mode;
 	always_comb begin
@@ -44,40 +42,38 @@ module lab5_pv(input clk, SW0, SW1, KEY0, SW2, SW3, SW4, output logic [6:0] SevS
 			seg[1] = "K";
 			seg[0] = " ";
 		end
-		//if you want to display has HEX you need to do it in the ASCII27Seg module. literally change the display, mod and div by 16
+		//hex value handling is primarily completed in ASCII27Seg module. Just draw values 10-15 as letters ez pz :)
 		else if(SW4 && SW3 && ~SW2) begin //Point Counter
-			//seg = pc[5:0]; //feel like this isn't right since they're different lenghts??? same for below ones
 			seg[5] = "P";
 			seg[4] = "C";
-			seg[3] = "d";
+			seg[3] = "h";
 			seg[2] = "'";
-			seg[1] = pc/8'd10;
-			seg[0] = pc%8'd10;
+			seg[1] = pc[7:4];
+			seg[0] = pc[3:0];
 			end
 		else if (SW4 && ~SW3 && SW2) begin //W_reg Value
 			seg[5] = "W";
 			seg[4] = "R";
-			seg[3] = "d";
+			seg[3] = "h";
 			seg[2] = "'";
-			seg[1] = w_reg/8'd10;
-			seg[0] = w_reg%8'd10;
+			seg[1] = w_reg[7:4];
+			seg[0] = w_reg[3:0];
 			end
 		else if (~SW4 && SW3 && SW2) begin //Alu Out Value
 			seg[5] = "A";
 			seg[4] = "L";
 			seg[3] = "U";
 			seg[2] = "'";
-			seg[1] = alu_out/8'd10;
-			seg[0] = alu_out%8'd10;
+			seg[1] = alu_out[7:4];
+			seg[0] = alu_out[3:0];
 			end
 		else if (SW4 && SW3 && SW2) begin //OPCODE
-			//need to retrieve opcode somehow..... prob need to retreive above same way.
 			seg[5] = "O";
 			seg[4] = "P";
-			seg[3] = opcode[3];
-			seg[2] = opcode[2];
-			seg[1] = opcode[1];
-			seg[0] = opcode[0];
+			seg[3] = " ";
+			seg[2] = "h";
+			seg[1] = "'";
+			seg[0] = opcode;
 			end
 		else begin
 			seg[0] = " ";
@@ -115,13 +111,11 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 	logic [7:0] A, B, nextPC;
 	logic [15:0] IR;
 	logic [3:0] RA, RB, RD;
-	logic [1:0] nextstate;
-	//logic [1:0] State; hartin put this here but i'm CONFIDENT its an accident 
-	
+	logic [1:0] nextstate;	
 	
 	
 	//csv write, comment out for physical
-	
+	/*
 	integer fd; 
 	always_comb begin
 		fd = $fopen("log.csv");
@@ -129,7 +123,7 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 			$fwrite(fd, "%h, %h, %h, %h, %h, %h, %h, %h, %h \n", PC, IR, OPCODE, RA, RB, RD, W_Reg, Cout, OF);
 		end
 	end
-	
+	*/
 	
 	//instantiations
 	//ROM
@@ -146,16 +140,8 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 	assign RA = IR[11:8];
 	assign RB = IR[7:4];
 	assign RD = IR[3:0];
-	 //Completely redundant I know
-		//ir[11:8], ir[7:4], ir[3:0], ir[15:12], 
-		//current_state, RF_data_in, //how i initially did it 
-		//RF_data_out0, RF_data_out1);
 		
-	//control Module determine state
-	//ALU will input the RF_data_out0/1
-	//W Register will output RF_data_in to go into reg file
-	//or it will go to PC
-	//PC needs to increment i THINK?!
+	//OF & Cout handling
 	always_comb begin
 		OF = 1'b0;
 		Cout = 1'b0;
@@ -190,12 +176,12 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 		nextPC = PC;
 		case(State)
 			IF: nextstate = FD;
-			FD: nextstate = EX; //might need to break these down to conditionals based off the OPCODE
+			FD: nextstate = EX; 
 			EX: nextstate = RWB;
 			RWB: begin
 				nextstate = IF;
-				// set PC based on going to the next instruction (? this might be our skips) based on OPCODE
-				nextPC = PC + 8'd1; //jumps handled below //A HALT would just not increment PC
+				
+				nextPC = PC + 8'd1;
 				if(OPCODE == 4'hE)
 					nextPC = {RA, RB};
 				else if (OPCODE == 4'hD) begin
@@ -214,45 +200,14 @@ module lab5(input clk, reset, output logic [3:0] OPCODE, output logic [1:0] Stat
 				end
 		endcase
 	end
-
-
-	
-
 endmodule 
-/* professor just incorporated this in the lab5 module
-module Control(input clk, reset, input [3:0] OPCODE, input [1:0] current_state, output [1:0] state);
-	
-	localparam IF = 2'b00, FD = 2'b01, EX = 2'b10, RWB = 2'b11; 
-	logic [1:0] nextstate;
-	
-	always_ff @ (posedge clk or posedge reset) begin
-		if (reset)
-			state <= IF;
-		else
-			state <= nextstate;
-	end
-	
-	always_comb begin
-		nextstate = state;
-		
-		case(current_state)
-			IF: nextstate = FD;
-			FD: nextstate = EX; //might need to break these down to conditionals based off the OPCODE
-			EX: nextstate = RWB;
-			RWB: nextstate = IF;
-			default: nextstate = state;
-		endcase
-	end
-endmodule
-*/
+
 module ALU(input [3:0] OPCODE, RA, RB, input [7:0] A, B, PC, output logic [7:0] alu_out);
-	//localparam ADD = 4'h1,
 	always_comb begin
 		alu_out = 8'd0;
-		//nextPC = PC;
 		
 		case(OPCODE)
-			4'h1: begin //Add
+			4'h1: begin 
 				alu_out = A + B;
 				end
 			4'h2: begin
@@ -288,18 +243,6 @@ module ALU(input [3:0] OPCODE, RA, RB, input [7:0] A, B, PC, output logic [7:0] 
 			4'hC: begin
 				alu_out = ~B;
 				end
-			/*4'hD: begin
-					if (A >= B) begin
-						nextPC = PC + alu_out;
-					end
-				end
-			4'hE: begin
-				nextPC = alu_out;		//these jumps are taken care of in the lab portion above
-				end
-			4'hF: begin
-				//halt somehow................ 
-				nextPC = 8'd0; //?? perchance
-				end*/ 
 			default: begin 
 				alu_out = 8'd0;
 				end
@@ -310,21 +253,21 @@ endmodule
 module RegFile(
 	input clk, reset,
 	input [3:0] RA, input [3:0] RB, input [3:0] RD, input [3:0] OPCODE, 
-	input [1:0] current_state, input [7:0] RF_data_in, //output of the W Register
+	input [1:0] current_state, input [7:0] RF_data_in, 
 	output logic [7:0] RF_data_out0, output logic [7:0] RF_data_out1);
 
-	localparam IF=2'b00, FD=2'b01, EX=2'b10, RWB=2'b11; //maybe?
+	localparam IF=2'b00, FD=2'b01, EX=2'b10, RWB=2'b11; 
 
 	logic [7:0] RF [15:0];
 	int i;
 	
 	always_ff @ (posedge clk or posedge reset)
 	begin
-		i = 0; //just easiest way to reset RF, i believe
+		i = 0; 
 		if (reset) begin
 			RF_data_out0 <= 8'd0;
 			RF_data_out1 <= 8'd0;
-			for (i=0; i<16; i=i+1) begin //above
+			for (i=0; i<16; i=i+1) begin 
 				RF[i] <= 8'd0;
 			end
 		end
