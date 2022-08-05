@@ -1,5 +1,5 @@
 # EEE333Verilog
-Verilog code for a class (Name witheld to prevent Academic Integrity issues) 
+Verilog code for a class 
 
 Just a collection of code for Verilog course. Uploaded so I could transfer files between work and home. No intent for this to be copied by anyone.
 
